@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Library Management System</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="script.js"></script>
+    </head>
+    <body class="bg-gray-100">
+        <div class="min-h-screen">
+            <nav class="bg-blue-600 p-4">
+                <div
+                    class="container mx-auto flex justify-between items-center"
+                >
+                    <h1 class="text-white text-2xl font-bold">
+                        Library System
+                    </h1>
+                    <div class="flex space-x-4">
+                        <select id="userSelect" class="px-4 py-2 rounded">
+                            <option value="">Select User</option>
+                            <option value="librarian">Librarian</option>
+                            <option value="reader">Reader</option>
+                        </select>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container mx-auto py-8">
+                <div id="librarianInterface" class="hidden space-y-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h2 class="text-xl font-bold mb-4">Add New Book</h2>
+                        <form id="addBookForm" class="space-y-4">
+                            <div>
+                                <label class="block mb-1">Title</label>
+                                <input
+                                    type="text"
+                                    id="bookTitle"
+                                    class="w-full p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label class="block mb-1">Author</label>
+                                <input
+                                    type="text"
+                                    id="bookAuthor"
+                                    class="w-full p-2 border rounded"
+                                    required
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            >
+                                Add Book
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h2 class="text-xl font-bold mb-4">Book Management</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="px-6 py-3 text-left">
+                                            Title
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Author
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Status
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bookList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="readerInterface" class="hidden space-y-8">
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h2 class="text-xl font-bold mb-4">Available Books</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="px-6 py-3 text-left">
+                                            Title
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Author
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="availableBooksList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow">
+                        <h2 class="text-xl font-bold mb-4">
+                            My Borrowed Books
+                        </h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-gray-100">
+                                        <th class="px-6 py-3 text-left">
+                                            Title
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Due Date
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Status
+                                        </th>
+                                        <th class="px-6 py-3 text-left">
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="borrowedBooksList"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const library = new Library();
+            const librarian = new Librarian(
+                "L1",
+                "John Librarian",
+                "john@library.com",
+                50000,
+            );
+            const reader = new Reader(
+                "R1",
+                "Alice Reader",
+                "alice@email.com",
+                "M001",
+            );
+            library.addUser(librarian);
+            library.addUser(reader);
+
+            const userSelect = document.getElementById("userSelect");
+            const librarianInterface =
+                document.getElementById("librarianInterface");
+            const readerInterface = document.getElementById("readerInterface");
+            const addBookForm = document.getElementById("addBookForm");
+            const bookList = document.getElementById("bookList");
+            const availableBooksList =
+                document.getElementById("availableBooksList");
+            const borrowedBooksList =
+                document.getElementById("borrowedBooksList");
+
+            userSelect.addEventListener("change", function () {
+                librarianInterface.classList.add("hidden");
+                readerInterface.classList.add("hidden");
+
+                if (this.value === "librarian") {
+                    librarianInterface.classList.remove("hidden");
+                    updateBookList();
+                } else if (this.value === "reader") {
+                    readerInterface.classList.remove("hidden");
+                    updateAvailableBooks();
+                    updateBorrowedBooks();
+                }
+            });
+
+            addBookForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const title = document.getElementById("bookTitle").value;
+                const author = document.getElementById("bookAuthor").value;
+
+                try {
+                    librarian.addBook(library, { title, author });
+                    updateBookList();
+                    addBookForm.reset();
+                    alert("Book added successfully!");
+                } catch (error) {
+                    alert("Error adding book: " + error.message);
+                }
+            });
+
+            function updateBookList() {
+                bookList.innerHTML = "";
+                library.books.forEach((book) => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                    <td class="px-6 py-4">${book.title}</td>
+                    <td class="px-6 py-4">${book.author}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 rounded ${book.isAvailable ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}">
+                            ${book.isAvailable ? "Available" : "Borrowed"}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <button onclick="removeBook('${book.id}')"
+                                class="text-red-600 hover:text-red-800 ${!book.isAvailable ? "opacity-50 cursor-not-allowed" : ""}">
+                            Remove
+                        </button>
+                    </td>
+                `;
+                    bookList.appendChild(row);
+                });
+            }
+
+            function updateAvailableBooks() {
+                availableBooksList.innerHTML = "";
+                library.books
+                    .filter((book) => book.isAvailable)
+                    .forEach((book) => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                    <td class="px-6 py-4">${book.title}</td>
+                    <td class="px-6 py-4">${book.author}</td>
+                    <td class="px-6 py-4">
+                        <button onclick="borrowBook('${book.id}')"
+                                class="text-blue-600 hover:text-blue-800">
+                            Borrow
+                        </button>
+                    </td>
+                `;
+                        availableBooksList.appendChild(row);
+                    });
+            }
+
+            function updateBorrowedBooks() {
+                borrowedBooksList.innerHTML = "";
+                library.loans
+                    .filter(
+                        (loan) =>
+                            loan.reader.id === reader.id && !loan.isReturned,
+                    )
+                    .forEach((loan) => {
+                        const row = document.createElement("tr");
+                        const isOverdue = loan.isOverdue();
+                        row.innerHTML = `
+                        <td class="px-6 py-4">${loan.book.title}</td>
+                        <td class="px-6 py-4">${loan.dueDate.toLocaleDateString()}</td>
+                        <td class="px-6 py-4">
+                            <span class="px-2 py-1 rounded ${isOverdue ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800"}">
+                                ${isOverdue ? "Overdue" : "Borrowed"}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <button onclick="returnBook('${loan.book.id}')"
+                                    class="text-blue-600 hover:text-blue-800">
+                                Return
+                            </button>
+                        </td>
+                    `;
+                        borrowedBooksList.appendChild(row);
+                    });
+            }
+
+            function removeBook(bookId) {
+                try {
+                    librarian.removeBook(library, bookId);
+                    updateBookList();
+                    alert("Book removed successfully!");
+                } catch (error) {
+                    alert("Error removing book: " + error.message);
+                }
+            }
+
+            function borrowBook(bookId) {
+                try {
+                    const dueDate = new Date();
+                    dueDate.setDate(dueDate.getDate() + 14);
+                    reader.borrowBook(library, bookId, dueDate);
+                    updateAvailableBooks();
+                    updateBorrowedBooks();
+                    alert("Book borrowed successfully!");
+                } catch (error) {
+                    alert("Error borrowing book: " + error.message);
+                }
+            }
+
+            function returnBook(bookId) {
+                try {
+                    reader.returnBook(library, bookId);
+                    updateAvailableBooks();
+                    updateBorrowedBooks();
+                    alert("Book returned successfully!");
+                } catch (error) {
+                    alert("Error returning book: " + error.message);
+                }
+            }
+        </script>
+    </body>
+</html>
