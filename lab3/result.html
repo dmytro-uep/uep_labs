@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="uk">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>laba 3</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="font-sans">
+        <div class="flex flex-col lg:flex-row min-h-screen">
+            <nav
+                class="bg-gray-800 text-white w-full lg:w-64 lg:fixed lg:h-screen"
+            >
+                <div class="p-4">
+                    <h1 class="text-2xl font-bold mb-4">LOGO</h1>
+                    <ul id="mainMenu">
+                        <li class="mb-2">
+                            <a
+                                href="#"
+                                class="hover:text-gray-300 flex justify-between items-center"
+                            >
+                                Section 1
+                                <span class="toggle-btn">▼</span>
+                            </a>
+                            <ul class="pl-4 mt-2 hidden">
+                                <li class="mb-2">
+                                    <a href="#" class="hover:text-gray-300"
+                                        >Subsection 1.1</a
+                                    >
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#" class="hover:text-gray-300"
+                                        >Subsection 1.2</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="mb-2">
+                            <a href="#" class="hover:text-gray-300"
+                                >Section 2</a
+                            >
+                        </li>
+                        <li class="mb-2">
+                            <a
+                                href="#"
+                                class="hover:text-gray-300 flex justify-between items-center"
+                            >
+                                Section 3
+                                <span class="toggle-btn">▼</span>
+                            </a>
+                            <ul class="pl-4 mt-2 hidden">
+                                <li class="mb-2">
+                                    <a href="#" class="hover:text-gray-300"
+                                        >Subsection 3.1</a
+                                    >
+                                </li>
+                                <li class="mb-2">
+                                    <a href="#" class="hover:text-gray-300"
+                                        >Subsection 3.2</a
+                                    >
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="flex-grow lg:ml-64 p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <section class="bg-white p-4 rounded shadow">
+                        <h2 class="text-xl font-bold mb-4">Calculator</h2>
+                        <form id="calculatorForm" class="space-y-4">
+                            <div class="space-y-2">
+                                <input
+                                    type="number"
+                                    id="num1"
+                                    placeholder="Enter first number"
+                                    required
+                                    class="w-full p-2 border rounded"
+                                />
+                                <input
+                                    type="number"
+                                    id="num2"
+                                    placeholder="Enter second number"
+                                    required
+                                    class="w-full p-2 border rounded"
+                                />
+                            </div>
+
+                            <div class="flex space-x-2">
+                                <button
+                                    type="button"
+                                    data-operation="+"
+                                    class="calc-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                >
+                                    +
+                                </button>
+                                <button
+                                    type="button"
+                                    data-operation="-"
+                                    class="calc-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                >
+                                    -
+                                </button>
+                                <button
+                                    type="button"
+                                    data-operation="*"
+                                    class="calc-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                >
+                                    *
+                                </button>
+                                <button
+                                    type="button"
+                                    data-operation="/"
+                                    class="calc-btn bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                                >
+                                    /
+                                </button>
+                            </div>
+
+                            <div>
+                                <select
+                                    id="saveToHistory"
+                                    class="w-full p-2 border rounded"
+                                >
+                                    <option value="yes">Так</option>
+                                    <option value="no">Ні</option>
+                                </select>
+                            </div>
+
+                            <div id="result" class="text-lg font-bold"></div>
+                        </form>
+                    </section>
+
+                    <section class="bg-white p-4 rounded shadow">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold">Operation History</h2>
+                            <button
+                                id="clearHistory"
+                                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                            >
+                                Clear History
+                            </button>
+                        </div>
+                        <ul id="historyList" class="space-y-2"></ul>
+                    </section>
+
+                    <section class="bg-white p-4 rounded shadow md:col-span-2">
+                        <h2 class="text-xl font-bold mb-2">Section 3</h2>
+                        <div class="flex flex-wrap justify-between">
+                            <div class="w-full md:w-1/2 mb-4 md:mb-0">
+                                <img
+                                    src="/api/placeholder/400/300"
+                                    alt="Image 2"
+                                    class="w-full h-48 object-cover rounded"
+                                />
+                            </div>
+                            <div class="w-full md:w-1/2 md:pl-4">
+                                <p class="mb-4">
+                                    Lorem ipsum dolor sit amet consectetur
+                                    adipisicing elit. Ipsam, magni? Delectus
+                                    quasi beatae esse!
+                                </p>
+                                <button
+                                    class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600"
+                                >
+                                    Order
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("calculatorForm");
+                const num1Input = document.getElementById("num1");
+                const num2Input = document.getElementById("num2");
+                const resultDiv = document.getElementById("result");
+                const historyList = document.getElementById("historyList");
+                const saveToHistory = document.getElementById("saveToHistory");
+                const clearHistoryBtn = document.getElementById("clearHistory");
+
+                document.querySelectorAll(".calc-btn").forEach((button) => {
+                    button.addEventListener("click", function () {
+                        const operation = this.dataset.operation;
+                        calculate(operation);
+                    });
+                });
+
+                clearHistoryBtn.addEventListener("click", function () {
+                    historyList.innerHTML = "";
+                });
+
+                function calculate(operation) {
+                    const num1 = parseFloat(num1Input.value);
+                    const num2 = parseFloat(num2Input.value);
+
+                    if (isNaN(num1) || isNaN(num2)) {
+                        resultDiv.textContent = "Please enter valid numbers";
+                        return;
+                    }
+
+                    let result;
+                    switch (operation) {
+                        case "+":
+                            result = num1 + num2;
+                            break;
+                        case "-":
+                            result = num1 - num2;
+                            break;
+                        case "*":
+                            result = num1 * num2;
+                            break;
+                        case "/":
+                            if (num2 === 0) {
+                                resultDiv.textContent = "Cannot divide by zero";
+                                return;
+                            }
+                            result = num1 / num2;
+                            break;
+                    }
+
+                    resultDiv.textContent = `Result: ${result}`;
+
+                    if (saveToHistory.value === "yes") {
+                        const historyItem = document.createElement("li");
+                        historyItem.className = "p-2 bg-gray-100 rounded";
+                        historyItem.textContent = `${num1} ${operation} ${num2} = ${result}`;
+                        historyList.appendChild(historyItem);
+                    }
+
+                    num1Input.value = "";
+                    num2Input.value = "";
+                }
+
+                const menuItems = document.querySelectorAll("#mainMenu > li");
+                menuItems.forEach((item) => {
+                    const toggleBtn = item.querySelector(".toggle-btn");
+                    if (toggleBtn) {
+                        toggleBtn.addEventListener("click", function (e) {
+                            e.preventDefault();
+                            const submenu = item.querySelector("ul");
+                            if (submenu) {
+                                submenu.classList.toggle("hidden");
+                                toggleBtn.textContent =
+                                    submenu.classList.contains("hidden")
+                                        ? "▼"
+                                        : "▲";
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
